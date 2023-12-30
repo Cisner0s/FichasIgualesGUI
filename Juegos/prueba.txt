@@ -1,0 +1,8 @@
+1
+
+A A A V R V
+V V R V A V
+A R R V R R
+A V R R R A
+R R V A V V
+R V A V R A
