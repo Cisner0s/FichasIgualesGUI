@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +23,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import logica.MainLogica;
 import logica.TratoFicheros;
 
 import javax.swing.JLabel;
@@ -46,7 +48,8 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	private JMenuItem btSalir;
 	private JMenuBar menuBar;
 	private JLabel lblNombreFichero;
-	private JTextField[][] matriz;;
+	private JTextField[][] matriz;
+	private MainLogica jugarLogica;;
 	
 	/**
 	 * Launch the application.
@@ -198,8 +201,10 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 			for (int j = 0 ; j < col ; j++){
 				JButton boton = new JButton("");
 				boton.setText(contenido[m][n]);
-				
 				boton.setFont(new Font("Arial", Font.BOLD, 14));
+				
+				funcionalidadBoton(boton, i, j);
+				
 				if (contenido[m][n].equals("A")) { 			// Fichas azules.
 					boton.setBackground(azulAgradable);
 				
@@ -213,8 +218,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 					boton.setBackground(Color.BLACK);
 				}
 				
-				botones[i][j]= boton;
-				
+				botones[i][j] = boton;
 				panelMatrizDelJuego.add(boton);
 				n++;
 			}
@@ -224,6 +228,16 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	}
 	
 	private void realizarAccionSiguiente() {
+    	try {
+			this.jugarLogica = new MainLogica(textField_NombreJuego.getText());
+		} catch (IllegalArgumentException e) {
+
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		}
+    	
         TratoFicheros file = new TratoFicheros();
         int fil = file.devolverNumFil(textField_NombreJuego.getText());
         int col = file.devolverNumCol(textField_NombreJuego.getText());
@@ -241,21 +255,16 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
         btTerminado.setVisible(true);
 	}
 	
-//   private void inicialPanel(int fil, int col, String[][] contenido) {
-//        panelMatrizDelJuego.setLayout(new GridLayout(fil, col, 0, 0));
-//        matriz = new JTextField[fil][col];
-//        for (int i = 0; i < fil; i++) {
-//            for (int j = 0; j < col; j++) {
-//                JTextField texto = new JTextField(contenido[i][j]);
-//                texto.setText(contenido[i][j]);
-//                texto.setFont(new Font("Tahoma", Font.BOLD, 12));
-//                texto.setHorizontalAlignment(SwingConstants.CENTER);
-//                matriz[i][j] = texto;
-//                panelMatrizDelJuego.add(matriz[i][j]);
-//            }
-//        }
-//        panelMatrizDelJuego.setVisible(true);
-//    }
+	
+	private void funcionalidadBoton(JButton boton, int fila, int columna){
+		boton.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	jugarLogica.realizarJugada(fila, columna);
+	        	               
+	        }
+	    });
+	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
