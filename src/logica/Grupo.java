@@ -238,5 +238,13 @@ public class Grupo {
 
         return movimiento;
     }
+    
+    public String generarAyuda(Grupo grupo, int numFilas){
+    	String movimiento;
+    	movimiento = "El movimiento recomendado es el que contiene la ficha de color " + grupo.getColor() + " en las coordenadas (" + (numFilas - grupo.getCoordenadaX()) +
+                ", " + (grupo.getCoordenadaY() + 1) + ")";
+    	
+    	return movimiento;
+    }
 
 }

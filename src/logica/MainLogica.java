@@ -33,6 +33,10 @@ public class MainLogica{
 		this.contMovimientos = 0;
 		ejecucionDelPrograma();
 	}
+	
+	public Tablero getTablero() {
+		return this.tablero;
+	}
      /**
      * Método principal que lee la entrada, ejecuta la estrategia óptima y muestra los resultados en la consola.
      *
@@ -272,7 +276,7 @@ public class MainLogica{
 		if(grupos.isEmpty()) {
 			char[][] matriz = tablero.getMatriz();
 			for (int i = 0; i < matriz.length; i++) {
-				for (int j = 0; j < matriz.length; j++) {
+				for (int j = 0; j < matriz[0].length; j++) {
 					if(matriz[i][j] == 'A' || matriz[i][j] == 'V' || matriz[i][j] == 'R') {
 						solucionSinCasillasRestantes = false;
 						fichasRestantes++;

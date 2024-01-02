@@ -1,0 +1,6 @@
+Juego 1:
+Movimiento 1 en (1, 2): eliminó 2 fichas de color R y obtuvo 0 puntos.
+Movimiento 2 en (2, 1): eliminó 2 fichas de color R y obtuvo 0 puntos.
+Movimiento 3 en (1, 1): eliminó 3 fichas de color A y obtuvo 1 punto.
+Movimiento 4 en (1, 1): eliminó 2 fichas de color V y obtuvo 0 puntos.
+Puntuación final: 1001, quedando 0 fichas.

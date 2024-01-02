@@ -2,11 +2,13 @@ package logica;
 
 import java.util.ArrayList;
 
+import javax.swing.SwingWorker;
+
 /**
  * La clase EstrategiaOptima implementa un algoritmo recursivo para encontrar la solución óptima en el juego Fichas Iguales.
  * Utiliza una estrategia de backtracking para evaluar todas las posibles combinaciones y selecciona la solución con la mayor puntuación.
  */
-public class EstrategiaOptima {
+public class EstrategiaOptima extends SwingWorker<String, Void>{
 
     // Tablero inicial para la estrategia
     Tablero tableroInicial;
@@ -112,21 +114,35 @@ public class EstrategiaOptima {
     }
 
     /**
-     * Imprime la solución óptima en la consola.
+     * Imprime la solución óptima.
      */
     public void imprimirSolucionOptima(){
-        for (int i = 0; i < solucionOptima.size(); i++) {
-           Grupo grupoSolucion = solucionOptima.get(i);
-           System.out.print("Movimiento " + (++i) + grupoSolucion.generarMovimiento(grupoSolucion, tableroInicial.getFilas())); 
+        //for (int i = 0; i < solucionOptima.size(); i++) {
+           Grupo grupoSolucion = solucionOptima.get(0);
+           grupoSolucion.generarAyuda(grupoSolucion, fichasRestantes);
            System.out.print("\n");
-           i--;
-        }
+        //   i--;
+        //}
+//
+//        if(fichasRestantes == 1){
+//            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " ficha.");
+//
+//        } else {
+//            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " fichas.");
+//        }
+    }
 
-        if(fichasRestantes == 1){
-            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " ficha.");
+	@Override
+	protected String doInBackground() throws Exception {
+		jugar(this.tableroInicial, 0);
 
-        } else {
-            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " fichas.");
-        }
+		Grupo grupoSolucion = solucionOptima.get(0);
+      
+		return grupoSolucion.generarAyuda(grupoSolucion, tableroInicial.getFilas());
+	}
+	
+	@Override
+    protected void done() {
+        // Aquí puedes realizar acciones después de que la tarea ha finalizado
     }
 }

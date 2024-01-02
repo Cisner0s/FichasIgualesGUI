@@ -1,21 +1,29 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
@@ -23,12 +31,15 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
+import logica.EstrategiaOptima;
 import logica.MainLogica;
+import logica.Tablero;
 import logica.TratoFicheros;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class MenuJugar extends JFrame implements ActionListener, UndoableEditListener{
 
@@ -39,7 +50,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	private JPanel panelMatrizDelJuego;
 //	private TratoFicheros file;
 	private JLabel lblMensajeError;
-	private JButton btReintentar;
+	private JButton btAyuda;
 	private JButton btTerminado;
 	private JMenuItem btRehacer;
 	private JMenuItem btDeshacer;
@@ -49,7 +60,8 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	private JMenuBar menuBar;
 	private JLabel lblNombreFichero;
 	private JTextField[][] matriz;
-	private MainLogica jugarLogica;;
+	private MainLogica jugarLogica;
+	private JDialog dialog;
 	
 	/**
 	 * Launch the application.
@@ -72,7 +84,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	 */
 	public MenuJugar() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 947, 614);
+		setBounds(100, 100, 947, 550);
 		setTitle("Jugar");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -159,6 +171,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		btSiguiente.setVisible(true);
 		
 		panelMatrizDelJuego = new JPanel();
+		//panelMatrizDelJuego.getDocument().addUndoableEditListener(this);
 		panelMatrizDelJuego.setBounds(262, 52, 391, 269);
 		panelPrincipal.add(panelMatrizDelJuego);
 		panelMatrizDelJuego.setVisible(false);
@@ -171,13 +184,13 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		panelPrincipal.add(lblMensajeError);
 		lblMensajeError.setVisible(false);
 		
-		btReintentar = new JButton("Reintentar");
-		btReintentar.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btReintentar.setBackground(SystemColor.activeCaption);
-		btReintentar.addActionListener(this);
-		btReintentar.setBounds(530, 402, 123, 37);
-		panelPrincipal.add(btReintentar);
-		btReintentar.setVisible(false);
+		btAyuda = new JButton("Ayuda");
+		btAyuda.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btAyuda.setBackground(SystemColor.activeCaption);
+		btAyuda.addActionListener(this);
+		btAyuda.setBounds(530, 402, 123, 37);
+		panelPrincipal.add(btAyuda);
+		btAyuda.setVisible(false);
 			
 		btTerminado = new JButton("Terminado");
 		btTerminado.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -250,7 +263,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 
 		panelMatrizDelJuego.setVisible(true);
         btSiguiente.setVisible(false);
-        btReintentar.setVisible(true);
+        btAyuda.setVisible(true);
         textField_NombreJuego.setVisible(false);
         lblNombreFichero.setVisible(false);
         btTerminado.setVisible(true);
@@ -280,13 +293,99 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	    });
 	}
 	
+	public void ofrecerAyuda() {
+	    String mensaje = "Se está calculando la jugada más óptima...";
+	    mostrarMensaje(mensaje, "Ayuda", 700, 200);  // Ajusté el ancho de la ventana
+
+	    EstrategiaOptima estrategiaOptima = new EstrategiaOptima(jugarLogica.getTablero());
+	    estrategiaOptima.execute();
+	    estrategiaOptima.addPropertyChangeListener(evt -> {
+	        if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+	            try {
+	                // Obtener la solución óptima
+	                String optimalSolution = estrategiaOptima.get();
+
+	                // Manejar la solución óptima en el EDT (actualizar la interfaz de usuario, etc.)
+	                // Por ejemplo, podrías mostrar la solución en algún componente de tu interfaz.
+	                mostrarSolucionEnInterfaz(optimalSolution);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    });
+	}
+
+	private void mostrarSolucionEnInterfaz(String optimalSolution) {
+	    // Actualiza el contenido del JLabel en el JDialog con la solución óptima
+	    if (dialog != null) {
+	        JLabel label = (JLabel) ((JPanel) dialog.getContentPane().getComponent(0)).getComponent(0);
+	        label.setText(optimalSolution);
+
+	        // Remueve la barra de progreso y añade un botón "Aceptar"
+	        JPanel panel = (JPanel) dialog.getContentPane().getComponent(0);
+	        panel.remove(1);  // Remueve la barra de progreso
+	        panel.add(crearBotonAceptar(), BorderLayout.SOUTH);  // Añade el botón "Aceptar"
+	        
+	        // Redimensiona la ventana para que quepa el botón "Aceptar"
+	        dialog.setSize(1000, 250);  // Ajusté el ancho de la ventana
+
+	        // Actualiza el estado del JDialog para que se redibuje correctamente
+	        dialog.revalidate();
+	        dialog.repaint();
+	        dialog.setLocationRelativeTo(null);
+	    }
+	}
+
+	private JPanel crearBotonAceptar() {
+	    JButton botonAceptar = new JButton("Aceptar");
+	    botonAceptar.addActionListener(e -> {
+	        // Cierra el JDialog al hacer clic en el botón "Aceptar"
+	        if (dialog != null) {
+	            dialog.dispose();
+	        }
+	    });
+
+	    // Centra el botón en el JPanel
+	    JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    panelBoton.add(botonAceptar);
+	    
+	    return panelBoton;
+	}
+
+	private void mostrarMensaje(String mensaje, String titulo, int ancho, int alto) {
+	    dialog = new JDialog();
+	    dialog.setTitle(titulo);
+
+	    JPanel panel = new JPanel(new BorderLayout());
+	    JLabel label = new JLabel(mensaje);
+	    label.setFont(new Font("Arial", Font.BOLD, 16));
+	    label.setHorizontalAlignment(JLabel.CENTER);
+	    //label.setVerticalAlignment(JLabel.CENTER);
+	    panel.add(label, BorderLayout.CENTER);
+
+	    JProgressBar progressBar = new JProgressBar();
+	    progressBar.setIndeterminate(true);
+	    panel.add(progressBar, BorderLayout.SOUTH);
+
+	    dialog.getContentPane().add(panel);
+	    dialog.setSize(ancho, alto);
+	    dialog.setLocationRelativeTo(null);
+	    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+	    // Muestra la ventana
+	    dialog.setVisible(true);
+	}
+
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btSiguiente) {
+			menuBar.setVisible(false);
 			realizarAccionSiguiente();
 			
-		} else if (e.getSource()==btReintentar) {
+		} else if (e.getSource()==btAyuda) {
+			ofrecerAyuda();
 
 		} else if(e.getSource()==btTerminado) {
 			JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(btTerminado);

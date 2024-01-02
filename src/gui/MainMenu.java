@@ -97,7 +97,7 @@ public class MainMenu extends JFrame implements ActionListener, UndoableEditList
 		// TODO Auto-generated method stub
 		if (e.getSource() == btCrearJuego) { //Logica del boton Crear Juego
 			try {
-				TamanioMatrizPopup frame = new TamanioMatrizPopup();
+				TamanioMatrizPopUp frame = new TamanioMatrizPopUp();
 				frame.setVisible(true);
 			} catch (Exception excp) {
 				excp.printStackTrace();

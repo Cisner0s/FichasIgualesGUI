@@ -8,14 +8,14 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class TamanioMatrizPopup extends JFrame {
+public class TamanioMatrizPopUp extends JFrame {
 
 	  private static final long serialVersionUID = 1L;
 	    private JTextField filasTextField;
 	    private JTextField columnasTextField;
 	    private JButton aceptarButton;
 
-	    public TamanioMatrizPopup() {
+	    public TamanioMatrizPopUp() {
 	        setTitle("Tamaño de la Matriz");
 	        setSize(312, 170);
 	        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -106,7 +106,7 @@ public class TamanioMatrizPopup extends JFrame {
 	        SwingUtilities.invokeLater(new Runnable() {
 	            @Override
 	            public void run() {
-	                TamanioMatrizPopup frame = new TamanioMatrizPopup();
+	                TamanioMatrizPopUp frame = new TamanioMatrizPopUp();
 	                frame.setVisible(true);
 	            }
 	        });
