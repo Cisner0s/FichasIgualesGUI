@@ -16,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.invoke.StringConcatFactory;
 
+/**
+ * La clase FinalDeLaPartidaPopUp representa un cuadro de diálogo que se muestra al finalizar una partida.
+ */
 public class FinalDeLaPartidaPopUp extends JDialog {
 
     private static final long serialVersionUID = 1L;
@@ -24,6 +27,14 @@ public class FinalDeLaPartidaPopUp extends JDialog {
     private int puntuacion;
     private int fichas;
 
+    /**
+     * Constructor de la clase FinalDeLaPartidaPopUp.
+     *
+     * @param mensaje    Mensaje a mostrar en el cuadro de diálogo.
+     * @param puntuacion Puntuación obtenida en la partida.
+     * @param solucion   Nombre del archivo de solución.
+     * @param fichas     Número de fichas.
+     */
     public FinalDeLaPartidaPopUp(String mensaje, int puntuacion, String solucion, int fichas) {
         
     	this.solucion = solucion;
@@ -84,6 +95,9 @@ public class FinalDeLaPartidaPopUp extends JDialog {
         getContentPane().add(panel);
     }
 
+    /**
+     * Muestra una ventana emergente para que el usuario introduzca el nombre del archivo y guarda la solución.
+     */
     private void mostrarVentanaGuardar() {
         JTextField textField = new JTextField();
         Object[] message = {
@@ -102,6 +116,11 @@ public class FinalDeLaPartidaPopUp extends JDialog {
         tratoFicheros.crearArchSolucion(nombreDelArchivoSolucion, solucion, puntuacion, fichas);
     }
 
+    /**
+     * Método principal para probar la clase FinalDeLaPartidaPopUp.
+     *
+     * @param args Argumentos de la línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         // Ejemplo de uso
         String mensaje = "¡Felicidades! Has completado la partida.";

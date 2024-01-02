@@ -2,14 +2,10 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,42 +26,42 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
-
-import logica.EstrategiaOptima;
-import logica.MainLogica;
-import logica.Tablero;
-import logica.TratoFicheros;
-
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
+import logica.EstrategiaOptima;
+import logica.MainLogica;
+import logica.TratoFicheros;
+
+/**
+ * La clase MenuJugar representa la interfaz gráfica para el juego.
+ */
 public class MenuJugar extends JFrame implements ActionListener, UndoableEditListener{
 
 	private static final long serialVersionUID = 1L;
+	private JLabel lblNombreFichero;
+	private JLabel lblMensajeError;
 	private JPanel panelPrincipal;
+	private JPanel panelMatrizDelJuego;
 	private JTextField textField_NombreJuego;
 	private JButton btSiguiente;
-	private JPanel panelMatrizDelJuego;
-//	private TratoFicheros file;
-	private JLabel lblMensajeError;
 	private JButton btAyuda;
 	private JButton btTerminado;
+	private JButton[][] botones;
 	private JMenuItem btRehacer;
 	private JMenuItem btDeshacer;
-	private UndoManager undoManager = new UndoManager();
-	private JButton[][] botones;
 	private JMenuItem btSalir;
 	private JMenuBar menuBar;
-	private JLabel lblNombreFichero;
-	private JTextField[][] matriz;
-	private MainLogica jugarLogica;
 	private JDialog dialog;
+	private MainLogica jugarLogica;
+	private UndoManager undoManager = new UndoManager();
 	
-	/**
-	 * Launch the application.
-	 */
+	  /**
+     * Método principal para lanzar la aplicación.
+     * 
+     * @param args Argumentos de la línea de comandos (no utilizados).
+     */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -79,9 +75,9 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		});
 	}
 	
-	/**
-	 * Create the frame.
-	 */
+	  /**
+     * Constructor de la clase MenuJugar.
+     */
 	public MenuJugar() {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 947, 550);
@@ -97,6 +93,9 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		
 	}
 	
+    /**
+     * Inicializa la barra de menú.
+     */
 	private void iniciarBarra() {
 		btRehacer = new JMenuItem("Rehacer");
         btRehacer.addActionListener(e -> {
@@ -140,7 +139,11 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		});
         menuBar.add(btSalir);
 	}
+
 	
+    /**
+     * Inicializa los componentes de la interfaz gráfica.
+     */
 	private void iniciarComponentes() {
 		panelPrincipal = new JPanel();
 		panelPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -203,6 +206,15 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		panelMatrizDelJuego.setVisible(false);	
 	}
 	
+
+    /**
+     * Crea los botones para la interfaz gráfica del juego.
+     * 
+     * @param fil       Número de filas.
+     * @param col       Número de columnas.
+     * @param contenido Contenido del juego.
+     * @param botones   Matriz de botones.
+     */
 	public void crearBotones(int fil, int col, String[][] contenido, JButton[][] botones) {
 		Color azulAgradable = new Color(30, 144, 255);  // Dodger Blue
 		Color verdeAgradable = new Color(60, 179, 113);  // Medium Sea Green
@@ -241,6 +253,10 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		}
 	}
 	
+
+    /**
+     * Realiza la acción asociada al botón "Siguiente".
+     */
 	private void realizarAccionSiguiente() {
     	try {
 			this.jugarLogica = new MainLogica(textField_NombreJuego.getText());
@@ -270,6 +286,13 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	}
 	
 	
+    /**
+     * Agrega funcionalidades a los botones de la interfaz gráfica.
+     * 
+     * @param boton   Botón al que se le agregará funcionalidad.
+     * @param fila    Fila del botón.
+     * @param columna Columna del botón.
+     */
 	private void funcionalidadBoton(JButton boton, int fila, int columna){
 		boton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
@@ -293,6 +316,10 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	    });
 	}
 	
+	
+	  /**
+     * Ofrece ayuda al usuario mostrando la solución óptima.
+     */
 	public void ofrecerAyuda() {
 	    String mensaje = "Se está calculando la jugada más óptima...";
 	    mostrarMensaje(mensaje, "Ayuda", 700, 200);  // Ajusté el ancho de la ventana
@@ -315,6 +342,12 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	    });
 	}
 
+	
+    /**
+     * Muestra la solución óptima en la interfaz gráfica.
+     * 
+     * @param optimalSolution Solución óptima del juego.
+     */
 	private void mostrarSolucionEnInterfaz(String optimalSolution) {
 	    // Actualiza el contenido del JLabel en el JDialog con la solución óptima
 	    if (dialog != null) {
@@ -336,6 +369,12 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	    }
 	}
 
+	
+    /**
+     * Crea un botón "Aceptar" para el diálogo de ayuda.
+     * 
+     * @return Panel que contiene el botón "Aceptar".
+     */
 	private JPanel crearBotonAceptar() {
 	    JButton botonAceptar = new JButton("Aceptar");
 	    botonAceptar.addActionListener(e -> {
@@ -352,6 +391,14 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	    return panelBoton;
 	}
 
+    /**
+     * Muestra un mensaje en un diálogo con una barra de progreso.
+     * 
+     * @param mensaje Mensaje a mostrar.
+     * @param titulo  Título del diálogo.
+     * @param ancho   Ancho del diálogo.
+     * @param alto    Alto del diálogo.
+     */
 	private void mostrarMensaje(String mensaje, String titulo, int ancho, int alto) {
 	    dialog = new JDialog();
 	    dialog.setTitle(titulo);
@@ -377,7 +424,11 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	}
 
 
-	
+	   /**
+     * Maneja las acciones de los botones y menús.
+     * 
+     * @param e Evento de acción.
+     */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btSiguiente) {
@@ -394,6 +445,12 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		
 	}
 
+	
+    /**
+     * Maneja los eventos de edición deshacer y rehacer.
+     * 
+     * @param e Evento de edición deshacer.
+     */
 	@Override
 	public void undoableEditHappened(UndoableEditEvent e) {
 		// TODO Auto-generated method stub

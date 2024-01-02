@@ -113,16 +113,16 @@ public class EstrategiaOptima extends SwingWorker<String, Void>{
         }
     }
 
-    /**
-     * Imprime la solución óptima.
-     */
-    public void imprimirSolucionOptima(){
-        //for (int i = 0; i < solucionOptima.size(); i++) {
-           Grupo grupoSolucion = solucionOptima.get(0);
-           grupoSolucion.generarAyuda(grupoSolucion, fichasRestantes);
-           System.out.print("\n");
-        //   i--;
-        //}
+//    /**
+//     * Imprime la solución óptima.
+//     */
+//    public void imprimirSolucionOptima(){
+//        //for (int i = 0; i < solucionOptima.size(); i++) {
+//           Grupo grupoSolucion = solucionOptima.get(0);
+//           grupoSolucion.generarAyuda(grupoSolucion, fichasRestantes);
+//           System.out.print("\n");
+//        //   i--;
+//        //}
 //
 //        if(fichasRestantes == 1){
 //            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " ficha.");
@@ -130,8 +130,14 @@ public class EstrategiaOptima extends SwingWorker<String, Void>{
 //        } else {
 //            System.out.println("Puntuación final: " + puntuacionOptima +", quedando " + fichasRestantes + " fichas.");
 //        }
-    }
+//    }
 
+    /**
+     * Realiza el trabajo principal en un hilo de fondo.
+     *
+     * @return La ayuda generada como una cadena de texto.
+     * @throws Exception Si ocurre un error durante la ejecución.
+     */
 	@Override
 	protected String doInBackground() throws Exception {
 		jugar(this.tableroInicial, 0);
@@ -141,6 +147,9 @@ public class EstrategiaOptima extends SwingWorker<String, Void>{
 		return grupoSolucion.generarAyuda(grupoSolucion, tableroInicial.getFilas());
 	}
 	
+	  /**
+     * Se llama cuando el trabajo principal ha sido completado.
+     */
 	@Override
     protected void done() {
         // Aquí puedes realizar acciones después de que la tarea ha finalizado

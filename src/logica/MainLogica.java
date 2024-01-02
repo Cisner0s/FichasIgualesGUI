@@ -14,19 +14,26 @@ import java.util.Iterator;
 
 /**
  * La clase MainFichasIguales contiene el método principal para ejecutar el juego Fichas Iguales.
- * Lee la entrada que representa los juegos, ejecuta la estrategia óptima y muestra los resultados en la consola.
+ * Lee la entrada que representa los juegos, ejecuta la estrategia óptima y encuentra el movimiento mas idoneo.
  */
 public class MainLogica{
 	
 	String ruta;
-	char[][] juego;
-	Tablero tablero;
 	String solucion;
+	Tablero tablero;
+	char[][] juego;
+	private char[][] matrizTrasJugada;
 	int contMovimientos;
 	int puntuacion;
-	private char[][] matrizTrasJugada;
 	boolean juegoTerminado;
 	
+	 /**
+     * Constructor de la clase MainLogica.
+     *
+     * @param ruta Ruta del archivo que contiene la configuración del juego.
+     * @throws IllegalArgumentException Si la ruta es nula o vacía.
+     * @throws FileNotFoundException    Si no se encuentra el archivo en la ruta especificada.
+     */
 	public MainLogica(String ruta) throws IllegalArgumentException, FileNotFoundException {
 		this.ruta = "Juegos/" + ruta;
 		this.solucion = "Juego 1:\n";
@@ -34,16 +41,19 @@ public class MainLogica{
 		ejecucionDelPrograma();
 	}
 	
+	  /**
+     * Obtiene el tablero actual del juego.
+     *
+     * @return El tablero actual del juego.
+     */
 	public Tablero getTablero() {
 		return this.tablero;
 	}
      /**
-     * Método principal que lee la entrada, ejecuta la estrategia óptima y muestra los resultados en la consola.
+     * Método principal que lee la entrada y ejecuta la estrategia óptima.
      *
-     * @param args Argumentos de línea de comandos (no utilizados en este caso).
      * @throws FileNotFoundException 
      * @throws IllegalArgumentException 
-     * @throws Exception Excepción general que puede ocurrir durante la ejecución.
      */
 	public void ejecucionDelPrograma() throws IllegalArgumentException, FileNotFoundException {
     	this.juego = leerEntrada();
@@ -55,16 +65,23 @@ public class MainLogica{
 //        buscarEstrategiaOptima.jugar(tablero, 0);
 //
 //        buscarEstrategiaOptima.imprimirSolucionOptima();
-        
-        for (int i = 0; i < juego.length; i++) {
-            for (int j = 0; j < juego[i].length; j++) {  // Corregir aquí usando juego[i].length
-                System.out.print(juego[i][j] + " ");
-            }
-            System.out.println();  // Imprimir una nueva línea después de cada fila
-        }
-        System.out.print("\n");
+//        for (int i = 0; i < juego.length; i++) {
+//            for (int j = 0; j < juego[i].length; j++) {  
+//                System.out.print(juego[i][j] + " ");
+//            }
+//            System.out.println();  
+//        }
+//        System.out.print("\n");
     }
 
+	
+    /**
+     * Lee la entrada del juego desde un archivo.
+     *
+     * @return La matriz que representa el juego.
+     * @throws IllegalArgumentException Si hay un problema con la entrada del juego.
+     * @throws FileNotFoundException    Si no se encuentra el archivo de juego.
+     */
     public char[][] leerEntrada() throws IllegalArgumentException, FileNotFoundException {
         File juegoFile = new File(ruta);
         Scanner sc = new Scanner(juegoFile);
@@ -170,7 +187,14 @@ public class MainLogica{
     }
         
     
-    
+    /**
+     * Realiza una jugada en el juego.
+     *
+     * @param fila    Fila de la ficha seleccionada.
+     * @param columna Columna de la ficha seleccionada.
+     * @param botones Matriz de botones representando el tablero gráfico.
+     * @return true si la jugada fue válida, false de lo contrario.
+     */
 	public boolean realizarJugada(int fila, int columna, JButton[][] botones) {
 		Color azulAgradable = new Color(30, 144, 255);  // Dodger Blue
 		Color verdeAgradable = new Color(60, 179, 113);  // Medium Sea Green
@@ -191,51 +215,31 @@ public class MainLogica{
 				}
 			}
 		}
-		//////////////////////////////////// TEMPORAL IMPLEMENTAR EXCISION ESQUEMA ///////////////////////////////////////
+
 		if(grupoContieneLaFichaElegida == null || grupoContieneLaFichaElegida.getListaFichas().size() == 1) {
-			System.out.println("Este seria el error de clickar en un grupo de una sola ficha.");
+//			System.out.println("Este seria el error de clickar en un grupo de una sola ficha.");
 			return false;
-			
-		} else {
-			System.out.println("El grupo en el que se encuentra la ficha es: " + grupoContieneLaFichaElegida.color + grupoContieneLaFichaElegida.coordenadaX + grupoContieneLaFichaElegida.coordenadaY 
-					+ "\n");
-			ArrayList<int[]> listaFichasGrupoSolucion = grupoContieneLaFichaElegida.getListaFichas();
-			for(int[] ficha : listaFichasGrupoSolucion ) {
-				System.out.println(ficha[0] + ", "+ ficha[1] + "\n");
-			}
-			////////////////////////////////////ALMACENAR MOVIMIENTO/////////////////////////////////
+//			
+		} 
+//		else {
+//			System.out.println("El grupo en el que se encuentra la ficha es: " + grupoContieneLaFichaElegida.color + grupoContieneLaFichaElegida.coordenadaX + grupoContieneLaFichaElegida.coordenadaY 
+//					+ "\n");
+//			ArrayList<int[]> listaFichasGrupoSolucion = grupoContieneLaFichaElegida.getListaFichas();
+//			for(int[] ficha : listaFichasGrupoSolucion ) {
+//				System.out.println(ficha[0] + ", "+ ficha[1] + "\n");
+//			}
 			
 			String movimiento = grupoContieneLaFichaElegida.generarMovimiento(grupoContieneLaFichaElegida, tablero.getFilas());
 			contMovimientos++;
 			solucion = solucion.concat("Movimiento " + contMovimientos + movimiento + "\n");
 			puntuacion += grupoContieneLaFichaElegida.getPuntos();
-			System.out.println(solucion);
-			System.out.println(puntuacion);
-			System.out.println();
-			
-			//////////////////////////////////////////////////////////////////////////////////////
-			////////////////////////////////////ELIMINAR FICHAS ///////////////////////////////////////
-			
-			//ArrayList<int[]> listaFichasGrupoSolucion = grupoContieneLaFichaElegida.getListaFichas();
-//			for(int[] ficha : listaFichasGrupoSolucion ) {
-//				botones[ficha[0]][ficha[1]].setText("X");
-//				botones[ficha[0]][ficha[1]].setBackground(Color.BLACK);
-//			}
 			
 			tablero.borrarGrupoSeleccionado(grupoContieneLaFichaElegida);
-			tablero.imprimirTablero(tablero);
-
-			
-			//////////////////////////////////////////////////////////////////////////////////////
-			////////////////////////////////////MOVER TABLERO///////////////////////////////////////
-			
 			tablero.comprimirTablero(tablero);
 			comprobarSiLaMatrizEstaSolucionada();
-			tablero.imprimirTablero(tablero);
 
 			matrizTrasJugada = tablero.getMatriz();
 
-			
 			for (int i = 0; i < botones.length; i++) {
 				for (int j = 0; j < botones[0].length; j++) {
 					botones[i][j].setText(String.valueOf(matrizTrasJugada[i][j]));
@@ -257,15 +261,14 @@ public class MainLogica{
 					}
 				}
 			}
-			
-			tablero.imprimirTablero(tablero);
-			
-			//////////////////////////////////////////////////////////////////////////////////////
-			
+					
 			return true;
-		}	
+//		}	
 	}
 	
+   /**
+     * Verifica si la matriz del juego está completamente resuelta y muestra el resultado de la partida.
+     */
 	private void comprobarSiLaMatrizEstaSolucionada() {
 		boolean solucionSinCasillasRestantes = true;
 		int fichasRestantes = 0;

@@ -239,6 +239,13 @@ public class Grupo {
         return movimiento;
     }
     
+    /**
+     * Genera una ayuda indicando el movimiento recomendado para un grupo en el tablero.
+     *
+     * @param grupo     El grupo para el cual se genera la ayuda.
+     * @param numFilas  El número de filas en el tablero.
+     * @return          La ayuda generada como una cadena de texto.
+     */
     public String generarAyuda(Grupo grupo, int numFilas){
     	String movimiento;
     	movimiento = "El movimiento recomendado es el que contiene la ficha de color " + grupo.getColor() + " en las coordenadas (" + (numFilas - grupo.getCoordenadaX()) +
