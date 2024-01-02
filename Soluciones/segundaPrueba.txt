@@ -1,0 +1,11 @@
+Juego 1:
+Movimiento 1 en (1, 1): eliminó 3 fichas de color R y obtuvo 1 punto.
+Movimiento 2 en (1, 1): eliminó 2 fichas de color A y obtuvo 0 puntos.
+Movimiento 3 en (1, 1): eliminó 4 fichas de color V y obtuvo 4 puntos.
+Movimiento 4 en (2, 5): eliminó 2 fichas de color V y obtuvo 0 puntos.
+Movimiento 5 en (2, 3): eliminó 8 fichas de color R y obtuvo 36 puntos.
+Movimiento 6 en (3, 4): eliminó 3 fichas de color V y obtuvo 1 punto.
+Movimiento 7 en (3, 6): eliminó 2 fichas de color V y obtuvo 0 puntos.
+Movimiento 8 en (1, 3): eliminó 3 fichas de color A y obtuvo 1 punto.
+Movimiento 9 en (1, 4): eliminó 3 fichas de color A y obtuvo 1 punto.
+Puntuación final: 44, quedando 6 fichas.

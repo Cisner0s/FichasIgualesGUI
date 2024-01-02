@@ -163,7 +163,7 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 		panelPrincipal.add(panelMatrizDelJuego);
 		panelMatrizDelJuego.setVisible(false);
 		
-		lblMensajeError = new JLabel("ERROR");
+		lblMensajeError = new JLabel("ERROR: El grupo seleccionado solo contiene una ficha. No se puede seleccionar");
 		lblMensajeError.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMensajeError.setForeground(Color.RED);
 		lblMensajeError.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -203,16 +203,17 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 				boton.setText(contenido[m][n]);
 				boton.setFont(new Font("Arial", Font.BOLD, 14));
 				
-				funcionalidadBoton(boton, i, j);
-				
 				if (contenido[m][n].equals("A")) { 			// Fichas azules.
 					boton.setBackground(azulAgradable);
+					funcionalidadBoton(boton, i, j);
 				
 				} else if (contenido[m][n].equals("V")) {	// Fichas verdes.
 					boton.setBackground(verdeAgradable);
+					funcionalidadBoton(boton, i, j);
 				
 				} else if (contenido[m][n].equals("R"))  {	// Fichas rojas.
 					boton.setBackground(rojoAgradable);
+					funcionalidadBoton(boton, i, j);
 					
 				} else { 									// Huecos sin ficha.
 					boton.setBackground(Color.BLACK);
@@ -259,8 +260,22 @@ public class MenuJugar extends JFrame implements ActionListener, UndoableEditLis
 	private void funcionalidadBoton(JButton boton, int fila, int columna){
 		boton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	jugarLogica.realizarJugada(fila, columna);
-	        	               
+	        	if(boton.getBackground() == Color.BLACK ) {
+	        		
+	        	} else {
+	        		boolean jugadaPosible = jugarLogica.realizarJugada(fila, columna, botones);
+	        	   	
+		        	if(jugadaPosible) {
+		        		lblMensajeError.setVisible(false);
+		        		for (int i = 0; i < botones.length; i++) {
+							for (int j = 0; j < botones[0].length; j++) {
+								panelMatrizDelJuego.add(botones[i][j]);
+							}	
+						}
+		        	} else {
+		        		lblMensajeError.setVisible(true);
+		        	}
+	        	}
 	        }
 	    });
 	}

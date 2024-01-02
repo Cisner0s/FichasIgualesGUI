@@ -201,6 +201,7 @@ public class Tablero {
      * Calcula los grupos presentes en el tablero y los agrega a la lista de grupos.
      */
     public void calcularGrupos(){
+    	gruposDelTablero.clear();
         boolean[][] visitado = new boolean[filas][columnas];
 
         for (int i = 0; i < filas; i++) {
@@ -401,7 +402,7 @@ public class Tablero {
      *
      * @param tablero Tablero que se va a imprimir.
      */
-    public static void imprimirTablero(Tablero tablero){
+    public void imprimirTablero(Tablero tablero){
         char[][] matriz = tablero.getMatriz();
 
         // Imprimir encabezado de columnas

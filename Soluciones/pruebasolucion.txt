@@ -1,0 +1,3 @@
+Juego 1:
+Movimiento 1 en (1, 1): eliminó 4 fichas de color A y obtuvo 4 puntos.
+Puntuación final: 1004, quedando 0 fichas.

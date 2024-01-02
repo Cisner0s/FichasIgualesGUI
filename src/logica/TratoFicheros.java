@@ -38,6 +38,34 @@ public class TratoFicheros {
         }
     }
     
+    public void crearArchSolucion(String ruta, String solucion, int puntuacion, int fichas) {
+        try {
+            String contenido = solucion;
+            contenido = contenido.concat("Puntuación final: " + puntuacion + ", quedando " + fichas + " fichas.");
+            File directory = new File("Soluciones");
+            
+            // Verificar si el directorio existe, si no, crearlo
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            File file = new File(directory, ruta);
+
+            // Si el archivo no existe, es creado
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(contenido);
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
     public void editarArchivo(String ruta, String contenido) {
     	try {
     	      // Abrimos el archivo para escritura

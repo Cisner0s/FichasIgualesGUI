@@ -1,6 +1,12 @@
 package logica;
 
 import java.util.Scanner;
+
+import javax.swing.JButton;
+
+import gui.FinalDeLaPartidaPopUp;
+
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -15,9 +21,16 @@ public class MainLogica{
 	String ruta;
 	char[][] juego;
 	Tablero tablero;
+	String solucion;
+	int contMovimientos;
+	int puntuacion;
+	private char[][] matrizTrasJugada;
+	boolean juegoTerminado;
 	
 	public MainLogica(String ruta) throws IllegalArgumentException, FileNotFoundException {
 		this.ruta = "Juegos/" + ruta;
+		this.solucion = "Juego 1:\n";
+		this.contMovimientos = 0;
 		ejecucionDelPrograma();
 	}
      /**
@@ -152,7 +165,14 @@ public class MainLogica{
         }
     }
         
-	public void realizarJugada(int fila, int columna) {
+    
+    
+	public boolean realizarJugada(int fila, int columna, JButton[][] botones) {
+		Color azulAgradable = new Color(30, 144, 255);  // Dodger Blue
+		Color verdeAgradable = new Color(60, 179, 113);  // Medium Sea Green
+		Color rojoAgradable = new Color(255, 69, 0);  // Red-Orange
+
+		
 		tablero.calcularGrupos();
 		ArrayList<Grupo> grupos = tablero.getGruposDelTablero();
 
@@ -168,8 +188,10 @@ public class MainLogica{
 			}
 		}
 		//////////////////////////////////// TEMPORAL IMPLEMENTAR EXCISION ESQUEMA ///////////////////////////////////////
-		if(grupoContieneLaFichaElegida == null) {
+		if(grupoContieneLaFichaElegida == null || grupoContieneLaFichaElegida.getListaFichas().size() == 1) {
 			System.out.println("Este seria el error de clickar en un grupo de una sola ficha.");
+			return false;
+			
 		} else {
 			System.out.println("El grupo en el que se encuentra la ficha es: " + grupoContieneLaFichaElegida.color + grupoContieneLaFichaElegida.coordenadaX + grupoContieneLaFichaElegida.coordenadaY 
 					+ "\n");
@@ -177,18 +199,99 @@ public class MainLogica{
 			for(int[] ficha : listaFichasGrupoSolucion ) {
 				System.out.println(ficha[0] + ", "+ ficha[1] + "\n");
 			}
+			////////////////////////////////////ALMACENAR MOVIMIENTO/////////////////////////////////
+			
+			String movimiento = grupoContieneLaFichaElegida.generarMovimiento(grupoContieneLaFichaElegida, tablero.getFilas());
+			contMovimientos++;
+			solucion = solucion.concat("Movimiento " + contMovimientos + movimiento + "\n");
+			puntuacion += grupoContieneLaFichaElegida.getPuntos();
+			System.out.println(solucion);
+			System.out.println(puntuacion);
+			System.out.println();
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////ELIMINAR FICHAS ///////////////////////////////////////
+			
+			//ArrayList<int[]> listaFichasGrupoSolucion = grupoContieneLaFichaElegida.getListaFichas();
+//			for(int[] ficha : listaFichasGrupoSolucion ) {
+//				botones[ficha[0]][ficha[1]].setText("X");
+//				botones[ficha[0]][ficha[1]].setBackground(Color.BLACK);
+//			}
+			
+			tablero.borrarGrupoSeleccionado(grupoContieneLaFichaElegida);
+			tablero.imprimirTablero(tablero);
+
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////MOVER TABLERO///////////////////////////////////////
+			
+			tablero.comprimirTablero(tablero);
+			comprobarSiLaMatrizEstaSolucionada();
+			tablero.imprimirTablero(tablero);
+
+			matrizTrasJugada = tablero.getMatriz();
+
+			
+			for (int i = 0; i < botones.length; i++) {
+				for (int j = 0; j < botones[0].length; j++) {
+					botones[i][j].setText(String.valueOf(matrizTrasJugada[i][j]));
+					
+					if (matrizTrasJugada[i][j] == 'A') { 			// Fichas azules.
+						botones[i][j].setBackground(azulAgradable);
+						//funcionalidadBoton(botones[i][j], i, j);
+					
+					} else if (matrizTrasJugada[i][j] == 'V') {	// Fichas verdes.
+						botones[i][j].setBackground(verdeAgradable);
+						//funcionalidadBoton(botones[i][j], i, j);
+					
+					} else if (matrizTrasJugada[i][j] == 'R')  {	// Fichas rojas.
+						botones[i][j].setBackground(rojoAgradable);
+						//funcionalidadBoton(botones[i][j], i, j);
+						
+					} else { 									// Huecos sin ficha.
+						botones[i][j].setBackground(Color.BLACK);
+					}
+				}
+			}
+			
+			tablero.imprimirTablero(tablero);
+			
+			//////////////////////////////////////////////////////////////////////////////////////
+			
+			return true;
 		}	
-		//////////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////ELIMINAR FICHAS DEL GRUPO ///////////////////////////////////////
+	}
+	
+	private void comprobarSiLaMatrizEstaSolucionada() {
+		boolean solucionSinCasillasRestantes = true;
+		int fichasRestantes = 0;
+		tablero.calcularGrupos();
+		ArrayList<Grupo> grupos = tablero.getGruposDelTablero();
 		
 		
-		//////////////////////////////////////////////////////////////////////////////////////
-		////////////////////////////////////MOVER TABLERO///////////////////////////////////////
-		
-		
-		//////////////////////////////////////////////////////////////////////////////////////
+		if(grupos.isEmpty()) {
+			char[][] matriz = tablero.getMatriz();
+			for (int i = 0; i < matriz.length; i++) {
+				for (int j = 0; j < matriz.length; j++) {
+					if(matriz[i][j] == 'A' || matriz[i][j] == 'V' || matriz[i][j] == 'R') {
+						solucionSinCasillasRestantes = false;
+						fichasRestantes++;
+					}
+				}
+			}
+			if(solucionSinCasillasRestantes) {
+				puntuacion += 1000;
+				FinalDeLaPartidaPopUp finalDeLaPartidaPopUp = new FinalDeLaPartidaPopUp("La partida ha sido completada sin casillas restantes, ¡Enhorabuena!.", puntuacion, solucion, fichasRestantes);
+				finalDeLaPartidaPopUp.setVisible(true);
+			} else {
+				FinalDeLaPartidaPopUp finalDeLaPartidaPopUp = new FinalDeLaPartidaPopUp("La partida ha sido completada con casillas restantes, ¡Buen Intento!.", puntuacion, solucion, fichasRestantes);
+				finalDeLaPartidaPopUp.setVisible(true);
+			}
+		}
 	}
 }
+
+
 
 
 
